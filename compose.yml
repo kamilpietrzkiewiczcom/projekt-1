@@ -1,0 +1,109 @@
+services:
+
+  #
+  # nginx
+  #
+
+  task-nginx:
+    container_name: task-nginx
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./backend:/var/www/html/
+    networks:
+      - task-network
+
+  #
+  # services
+  #
+
+  ### auth ###
+
+  task-php:
+    container_name: task-php
+    build:
+      context: .
+      dockerfile: ./docker/php-fpm/Dockerfile
+    volumes:
+      - ./backend:/var/www/html
+      - ./docker/php-fpm/config/conf.d:/usr/local/etc/php/conf.d
+    ports:
+      - "9000:9000"
+    networks:
+      - task-network
+
+  #
+  # database viewer
+  #
+
+  task-phpmyadmin:
+    container_name: task-phpmyadmin
+    image: phpmyadmin
+    ports:
+      - "8888:80"
+    #environment:
+    #  - 'PGADMIN_DEFAULT_EMAIL=admin@magickimage.io'
+    #  - 'PGADMIN_DEFAULT_PASSWORD=SuperSecret'
+    networks:
+      - task-network
+
+  #
+  # queues - RabbitMQ
+  #
+
+  task-rabbitmq:
+    container_name: task-rabbitmq
+    build:
+      context: .
+      dockerfile: ./docker/rabbitmq/Dockerfile
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15674:15674"
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    networks:
+      - task-network
+
+  #
+  # mail service
+  #
+
+  task-mailpit:
+    container_name: task-mailpit
+    build:
+      context: .
+      dockerfile: ./docker/mailpit/Dockerfile
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks:
+      - task-network
+    environment:
+      MP_SMTP_AUTH_ALLOW_INSECURE: true
+      MP_SMTP_AUTH_ACCEPT_ANY: true
+      MP_SENDMAIL_FROM: "administration@serpsamurai.io"
+
+  #
+  # databases
+  #
+
+  ### php ###
+
+  task-db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: app
+      MYSQL_DATABASE: app
+
+volumes:
+  task-database_data:
+
+networks:
+  task-network:
