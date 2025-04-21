@@ -5,6 +5,7 @@ namespace App\Task\Domain;
 use App\Task\Domain\Exceptions\Product\ProductDoesNotHaveCategoryException;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
 use Iterator;
 use Symfony\Component\Uid\Uuid;
 
@@ -13,22 +14,25 @@ class Product
     private Uuid $id;
     private ProductTitle $title;
     private ProductPrice $price;
-    //private ProductCategoriesType $category;
-
     /**
-     * @var ArrayCollection
+     * @var ArrayCollection|Category[]
      */
     private ArrayCollection $category;
 
     private DateTime $createdAt;
     private DateTime $updatedAt;
 
-    public function __construct(Uuid $id, ProductTitle $title, ProductPrice $price, ProductCategoriesType $category)
+    public function __construct(Uuid $id, ProductTitle $title, ProductPrice $price)
     {
+        $this->initCategory();
         $this->setId($id);
         $this->setTitle($title);
         $this->setPrice($price);
-        $this->setCategory($category);
+    }
+
+    private function initCategory(): void
+    {
+        $this->category = new ArrayCollection();
     }
 
     private function setId(Uuid $id): void
@@ -46,13 +50,27 @@ class Product
         $this->price = $price;
     }
 
-    private function setCategory(ProductCategoriesType $category): void
+    private function addCategory(Category $category): void
     {
-        if (!$category->getIterator()->valid()) {throw new ProductDoesNotHaveCategoryException(
-            $this->id,
-            $this->title
-        );}
-        $this->category = $category;
+        $this->category->add($category);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function removeCategory(Category $category): void
+    {
+        $iterator = $this->category->getIterator();
+        while ($iterator->valid()) {
+            /**
+             * @var Category $current
+             */
+            $current = $iterator->current();
+            if ($current->getId() === $category->getId()) {
+                $this->category->remove($iterator->key());
+            }
+            $iterator->next();
+        }
     }
 
     private function setCreatedAt(DateTime $createdAt): void
@@ -80,9 +98,12 @@ class Product
         return $this->price->get();
     }
 
+    /**
+     * @throws Exception
+     */
     public function getCategory(): Iterator
     {
-        return $this->category;
+        return $this->category->getIterator();
     }
 
     public function getCreatedAt(): string
@@ -95,13 +116,31 @@ class Product
         return $this->updatedAt->format('Y-m-d H:i:s');
     }
 
+    /**
+     * @throws Exception
+     */
     final public function onPrePersist(): void
     {
+        $iterator = $this->category->getIterator();
+        if (!$iterator->valid()) {throw new ProductDoesNotHaveCategoryException(
+            $this->id,
+            $this->title
+        );}
+
         $this->createdAt = new DateTime();
     }
 
+    /**
+     * @throws Exception
+     */
     final public function onPreUpdate(): void
     {
+        $iterator = $this->category->getIterator();
+        if (!$iterator->valid()) {throw new ProductDoesNotHaveCategoryException(
+            $this->id,
+            $this->title
+        );}
+
         $this->updatedAt = new DateTime();
     }
 }
