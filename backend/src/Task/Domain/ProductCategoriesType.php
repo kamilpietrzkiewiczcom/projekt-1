@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Task\Domain\Doctrine\Mapping\Types;
+namespace App\Task\Domain;
 
-use App\Task\Infrastructure\Doctrine\Mapping\Types\Email;
-use App\Task\Infrastructure\Doctrine\Mapping\Types\EmailIsNotValid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
@@ -83,10 +81,7 @@ final class ProductCategoriesType extends SimpleArrayType implements Iterator
             return null;
         }
 
-        var_dump($value);
-        die;
-
-        //return new ProductCategoriesType();
+        return new ProductCategoriesType();
     }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool
@@ -97,5 +92,10 @@ final class ProductCategoriesType extends SimpleArrayType implements Iterator
     public function getName(): string
     {
         return self::NAME;
+    }
+
+    public function get(): ArrayCollection
+    {
+        return $this->collection;
     }
 }
