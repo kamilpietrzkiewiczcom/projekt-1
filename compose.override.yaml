@@ -1,4 +1,4 @@
-services:
-  task-db:
-    ports:
-      - "3306"
+#services:
+#  task-db:
+#    ports:
+#      - "3306"

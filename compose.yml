@@ -42,12 +42,13 @@ services:
 
   task-phpmyadmin:
     container_name: task-phpmyadmin
-    image: phpmyadmin
+    build:
+      context: .
+      dockerfile: ./docker/phpmyadmin/Dockerfile
     ports:
       - "8888:80"
-    #environment:
-    #  - 'PGADMIN_DEFAULT_EMAIL=admin@magickimage.io'
-    #  - 'PGADMIN_DEFAULT_PASSWORD=SuperSecret'
+    environment:
+      - PMA_HOST=task-db
     networks:
       - task-network
 
@@ -96,11 +97,21 @@ services:
   ### php ###
 
   task-db:
-    image: mysql
+    container_name: task-db
+    build:
+      context: .
+      dockerfile: ./docker/db/Dockerfile
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: app
       MYSQL_DATABASE: app
+    #ports:
+    #  - "3300:3306"
+    #  - "3301:33060"
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+    networks:
+      - task-network
 
 volumes:
   task-database_data:
