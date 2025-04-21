@@ -1,2 +1,4 @@
 .idea
 backend/vendor/
+backend/composer.phar
+docker/db/data/
