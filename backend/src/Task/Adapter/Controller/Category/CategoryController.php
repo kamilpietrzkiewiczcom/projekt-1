@@ -76,9 +76,6 @@ class CategoryController extends AbstractController
             $response = $this->deleteCategoryService->removeCategory($categoryId);
             return new JsonResponse(['isError' => !$response->getStatus(), 'msg' => "OK", "data" => ["Category deleted"]]);
         } catch (Throwable $e) {
-            var_dump($e->getMessage());
-            die;
-
             return new JsonResponse(
                 ['isError' => true, 'msg' => "ERROR", "data" => ["Category can`t be deleted"]],
                 500

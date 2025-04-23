@@ -69,4 +69,13 @@ class DoctrineCategoryRepository extends ServiceEntityRepository implements Cate
             ->getQuery();
         return $query->getSingleResult();
     }
+
+    /**
+     * @throws ORMException
+     */
+    public function getReference(Uuid $categoryId): Category
+    {
+        $em = $this->getEntityManager();
+        return $em->getReference(Category::class, ['id' => $categoryId]);
+    }
 }

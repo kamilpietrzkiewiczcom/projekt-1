@@ -12,4 +12,5 @@ interface CategoryRepository
                                                   // or return iterator that iterates over the repository
     public function removeCategory(Uuid $categoryId): void;
     public function getCategoryById(Uuid $id): Category;
+    public function getReference(Uuid $categoryId): Category;
 }

@@ -25,7 +25,9 @@ class CreateProductRequest
 
     public function getCategories(): array
     {
-        return $this->request->get('categories') ?? [];
+        $categories = $this->request->get('categories');
+        preg_match_all("/[a-z0-9\-]+/", $categories, $found);
+        return $found[0];
     }
 
     public function isValid(): bool

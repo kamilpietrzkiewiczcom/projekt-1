@@ -3,24 +3,22 @@
 namespace App\Task\Domain;
 
 use App\Task\Domain\Exceptions\Product\ProductDoesNotHaveCategoryException;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Exception;
-use Iterator;
 use Symfony\Component\Uid\Uuid;
+use Traversable;
 
 class Product
 {
     private Uuid $id;
     private ProductTitle $title;
     private ProductPrice $price;
-    /**
-     * @var ArrayCollection|Category[]
-     */
-    private ArrayCollection $category;
+    private Collection $category;
 
-    private DateTime $createdAt;
-    private DateTime $updatedAt;
+    private DateTimeImmutable $createdAt;
+    private DateTimeImmutable $updatedAt;
 
     public function __construct(Uuid $id, ProductTitle $title, ProductPrice $price)
     {
@@ -50,7 +48,7 @@ class Product
         $this->price = $price;
     }
 
-    private function addCategory(Category $category): void
+    public function addCategory(Category $category): void
     {
         $this->category->add($category);
     }
@@ -58,7 +56,7 @@ class Product
     /**
      * @throws Exception
      */
-    private function removeCategory(Category $category): void
+    public function removeCategory(Category $category): void
     {
         $iterator = $this->category->getIterator();
         while ($iterator->valid()) {
@@ -73,12 +71,12 @@ class Product
         }
     }
 
-    private function setCreatedAt(DateTime $createdAt): void
+    private function setCreatedAt(DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
-    private function setUpdatedAt(DateTime $updatedAt): void
+    private function setUpdatedAt(DateTimeImmutable $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
@@ -101,7 +99,7 @@ class Product
     /**
      * @throws Exception
      */
-    public function getCategory(): Iterator
+    public function getCategory(): Traversable
     {
         return $this->category->getIterator();
     }
@@ -127,7 +125,10 @@ class Product
             $this->title
         );}
 
-        $this->createdAt = new DateTime();
+        $datetime = new DateTimeImmutable();
+
+        $this->createdAt = $datetime;
+        $this->updatedAt = $datetime;
     }
 
     /**
@@ -141,6 +142,6 @@ class Product
             $this->title
         );}
 
-        $this->updatedAt = new DateTime();
+        $this->updatedAt = new DateTimeImmutable();
     }
 }
