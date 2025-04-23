@@ -15,12 +15,15 @@ class UpdateCategoryRequest
 
     public function getId(): string
     {
-        return $this->request->get('id') ?? "";
+        $data = $this->request->getContent();
+        preg_match_all("/([0-9a-z\-]*)/", $data, $found);
+        return $found[0][21] ?? "";
     }
 
     public function getCode(): string
     {
-        return $this->request->get('code') ?? "";
+        $data = $this->request->getContent();
+        return explode("\r\n", $data)[7] ?? "";
     }
 
     public function isValid(): bool

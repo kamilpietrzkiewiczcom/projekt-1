@@ -5,7 +5,7 @@ namespace App\Task\Domain;
 use DateTimeImmutable;
 use Symfony\Component\Uid\Uuid;
 
-final class Category
+class Category
 {
     private Uuid $id;
     private CategoryCode $code;

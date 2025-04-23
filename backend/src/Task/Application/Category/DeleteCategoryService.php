@@ -20,6 +20,9 @@ readonly class DeleteCategoryService
             $this->categoryRepository->removeCategory($categoryId);
             return new DeleteCategoryResponse(true);
         } catch (Throwable $e) {
+            var_dump($e->getMessage());
+            die;
+
             return new DeleteCategoryResponse(false, ['UNKNOWN ERROR']);
         }
     }

@@ -22,6 +22,8 @@ readonly class UpdateCategoryService
         } catch (CategoryDoesNotExistException) {
             return new UpdateCategoryResponse(false, ["Category does not exists"]);
         } catch (Throwable $e) {
+            var_dump($e->getMessage());
+            die;
             return new UpdateCategoryResponse(false, ["Unknown error"]);
         }
     }

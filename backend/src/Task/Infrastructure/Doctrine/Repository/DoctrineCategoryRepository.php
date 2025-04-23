@@ -53,7 +53,9 @@ class DoctrineCategoryRepository extends ServiceEntityRepository implements Cate
     public function removeCategory(Uuid $categoryId): void
     {
         $em = $this->getEntityManager();
-        $em->remove($em->getReference(Category::class, ['id' => $categoryId]));
+        $proxy = $em->getReference(Category::class, ['id' => $categoryId]);
+        $em->remove($proxy);
+        $em->flush();
     }
 
     public function getCategoryById(Uuid $id): Category
@@ -63,7 +65,7 @@ class DoctrineCategoryRepository extends ServiceEntityRepository implements Cate
         $query = $qb->select('c')
             ->from(Category::class, 'c')
             ->where('c.id = :id')
-            ->setParameter(":id", $id)
+            ->setParameter(":id", $id->toBinary())
             ->getQuery();
         return $query->getSingleResult();
     }

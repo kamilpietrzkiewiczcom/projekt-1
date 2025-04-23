@@ -50,13 +50,13 @@ class CategoryController extends AbstractController
         }
     }
 
-    #[Route("/category", name: "update_category", methods: ["PATCH"])]
+    #[Route("/category", name: "update_category", methods: ["PUT"])]
     public function updateCategory(UpdateCategoryRequest $request): JsonResponse
     {
         try {
             $this->updateCategoryService->updateCategory($request);
             return new JsonResponse(
-                ['isError' => true, 'msg' => "OK", "data" => ["Category updated"]], 200
+                ['isError' => false, 'msg' => "OK", "data" => ["Category updated"]], 200
             );
         } catch (CategoryDoesNotExistException) {
             return new JsonResponse(['isError' => true, 'msg' => "ERROR", "data" => ["Category does not exists"]], 400);
@@ -65,7 +65,7 @@ class CategoryController extends AbstractController
         }
     }
 
-    #[Route("/category", name: "delete_category", methods: ["DELETE"])]
+    #[Route("/category/{categoryId}", name: "delete_category", methods: ["DELETE"])]
     public function deleteCategory(Uuid $categoryId): JsonResponse
     {
         /**
@@ -76,6 +76,9 @@ class CategoryController extends AbstractController
             $response = $this->deleteCategoryService->removeCategory($categoryId);
             return new JsonResponse(['isError' => !$response->getStatus(), 'msg' => "OK", "data" => ["Category deleted"]]);
         } catch (Throwable $e) {
+            var_dump($e->getMessage());
+            die;
+
             return new JsonResponse(
                 ['isError' => true, 'msg' => "ERROR", "data" => ["Category can`t be deleted"]],
                 500
@@ -108,7 +111,8 @@ class CategoryController extends AbstractController
             $serviceResponse = $this->readAllCategoriesService->get();
             $categories = $serviceResponse->getCategories();
             $data = $this->getCategoriesDataWithHateoas($categories);
-            return new JsonResponse(['isError' => false, 'msg' => "OK", "data" => $data]);
+            return new JsonResponse(['isError
+            ' => false, 'msg' => "OK", "data" => $data]);
         } catch (Throwable $e) {
             return new JsonResponse(['isError' => true, 'msg' => "ERROR", "data" => ["Can`t get categories."]], 500);
         }
@@ -127,7 +131,7 @@ class CategoryController extends AbstractController
                     'create' => $this->urlGenerator->generate('create_category'),
                     'read' => $this->urlGenerator->generate('get_category', ['id' => $category->getId()]),
                     'update' => $this->urlGenerator->generate('update_category'),
-                    'delete' => $this->urlGenerator->generate('delete_category', ['id' => $category->getId()]),
+                    'delete' => $this->urlGenerator->generate('delete_category', ['categoryId' => $category->getId()]),
                 ]
             ];
             $categoryCollection->next();

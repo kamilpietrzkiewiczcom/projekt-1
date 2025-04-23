@@ -6,6 +6,10 @@
 
 curl --location 'http://zadanie.test/index.php/category' --form 'code="test2"'
 
+### aktualizacja kategorii
+
+curl --location --request PUT 'http://zadanie.test/index.php/category' --form 'id="36a33eaf-d7a7-4de0-ae93-827c857118a6"' --form 'code="nazwa33 1"'
+
 ### kasowanie kategorii
 
 
