@@ -12,7 +12,7 @@ curl --location --request PUT 'http://zadanie.test/index.php/category' --form 'i
 
 ### kasowanie kategorii
 
-
+...
 
 ### pobranie listy kategorii
 

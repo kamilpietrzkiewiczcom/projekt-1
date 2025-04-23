@@ -144,4 +144,11 @@ class Product
 
         $this->updatedAt = new DateTimeImmutable();
     }
+
+    public function __toString(): string
+    {
+        $id = $this->id->toRfc4122();
+        $title = $this->title->getTitle();
+        return "Product $id, $title";
+    }
 }
