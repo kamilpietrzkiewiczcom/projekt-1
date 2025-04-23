@@ -1,5 +1,21 @@
 # projekt-1
 
+## Zapytania curl
+
+### utworzenie kategorii
+
+curl --location 'http://zadanie.test/index.php/category' --form 'code="test2"'
+
+### kasowanie kategorii
+
+
+
+### pobranie listy kategorii
+
+curl --location 'http://zadanie.test/index.php/categories'
+
+### 
+
 ## Stack technologiczny:
 
 🚀 Symfony – najnowsza stabilna wersja. MySQL – bo dane trzeba gdzieś trzymać.

@@ -12,6 +12,20 @@ class CategoryCollection implements Iterator
      */
     private array $data = [];
 
+    public function toArray(): array
+    {
+        $data = [];
+
+        foreach ($this->data as $entry) {
+            $data[] = [
+                'id' => $entry->getId(),
+                'code' => $entry->getCode()
+            ];
+        }
+
+        return $data;
+    }
+
     public function append(Category $product): void
     {
         $this->data[] = $product;

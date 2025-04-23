@@ -3,3 +3,15 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+task-controllers-category:
+    resource:
+        path: ../src/Task/Adapter/Controller/Category
+        namespace: App\Task\Adapter\Controller\Category
+    type: attribute
+
+task-controllers-product:
+    resource:
+        path: ../src/Task/Adapter/Controller/Product
+        namespace: App\Task\Adapter\Controller\Product
+    type: attribute

@@ -2,15 +2,15 @@
 
 namespace App\Task\Domain;
 
-use DateTime;
+use DateTimeImmutable;
 use Symfony\Component\Uid\Uuid;
 
 final class Category
 {
     private Uuid $id;
     private CategoryCode $code;
-    private DateTime $createdAt;
-    private DateTime $updatedAt;
+    private DateTimeImmutable $createdAt;
+    private DateTimeImmutable $updatedAt;
 
     /**
      * @param Uuid $id
@@ -20,6 +20,11 @@ final class Category
     {
         $this->id = $id;
         $this->code = $code;
+    }
+
+    public function updateCode(string $code): void
+    {
+        $this->code = new CategoryCode($code);
     }
 
     public function getId(): string
@@ -44,11 +49,13 @@ final class Category
 
     final public function onPrePersist(): void
     {
-        $this->createdAt = new DateTime();
+        $currentDate = new DateTimeImmutable();
+        $this->createdAt = $currentDate;
+        $this->updatedAt = $currentDate;
     }
 
     final public function onPreUpdate(): void
     {
-        $this->updatedAt = new DateTime();
+        $this->updatedAt = new DateTimeImmutable();
     }
 }

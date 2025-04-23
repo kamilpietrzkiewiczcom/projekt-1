@@ -6,6 +6,7 @@ use App\Task\Domain\Category;
 use App\Task\Domain\CategoryCollection;
 use App\Task\Domain\CategoryRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Exception\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Uid\Uuid;
 
@@ -35,8 +36,8 @@ class DoctrineCategoryRepository extends ServiceEntityRepository implements Cate
     {
         $em = $this->getEntityManager();
         $qb = $em->createQueryBuilder();
-        $query = $qb->select('p')
-            ->from(Category::class, 'p')
+        $query = $qb->select('c')
+            ->from(Category::class, 'c')
             ->getQuery();
         $results = $query->getResult();
         $collection = new CategoryCollection();
@@ -44,5 +45,26 @@ class DoctrineCategoryRepository extends ServiceEntityRepository implements Cate
             $collection->append($entity);
         }
         return $collection;
+    }
+
+    /**
+     * @throws ORMException
+     */
+    public function removeCategory(Uuid $categoryId): void
+    {
+        $em = $this->getEntityManager();
+        $em->remove($em->getReference(Category::class, ['id' => $categoryId]));
+    }
+
+    public function getCategoryById(Uuid $id): Category
+    {
+        $em = $this->getEntityManager();
+        $qb = $em->createQueryBuilder();
+        $query = $qb->select('c')
+            ->from(Category::class, 'c')
+            ->where('c.id = :id')
+            ->setParameter(":id", $id)
+            ->getQuery();
+        return $query->getSingleResult();
     }
 }
