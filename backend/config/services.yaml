@@ -32,6 +32,15 @@ services:
             - { name: doctrine.event_listener, event: postPersist }
 
     #
+    # notifiers
+    #
+
+    App\Task\Adapter\Notification\NotifierFactory: ~
+
+    App\Task\Adapter\Notification\Notifier:
+        factory: ['@App\Task\Adapter\Notification\NotifierFactory', 'getNotifier']
+
+    #
     # requests
     #
 
